@@ -1,0 +1,15 @@
+.body-master {
+  overflow: hidden;
+}
+
+.room {
+  white-space: nowrap;
+}
+
+.btn-movimiento {
+  z-index: 500;
+  position: absolute;
+  border: 0;
+  background: 0;
+  cursor: alias;
+}

@@ -1,6 +1,22 @@
-<main class="main">
-  <div class="content">
+<main>
+  appIniciada
+  <div>
+    @if (side.up.button) {
+      <button class="btn-movimiento" (click)="changeRoom(side.up.targetId)">buttonUp</button>
+    }
+    @if (side.down.button) {
+      <button class="btn-movimiento" (click)="changeRoom(side.down.targetId)">buttonDown</button>
+    }
+    @if (side.left.button) {
+      <button class="btn-movimiento" (click)="changeRoom(side.left.targetId)">buttonLeft</button>
+    }
+    @if (side.right.button) {
+      <button class="btn-movimiento" (click)="changeRoom(side.right.targetId)">buttonRight</button>
+    }
   </div>
-</main>
+  @if (windowLoaded()) {
+    <room-about (eventRoom)="roomCargada($event)"></room-about>
+    <room-contact (eventRoom)="roomCargada($event)"></room-contact>
+  }
 
-<router-outlet />
+</main>
