@@ -1,22 +1,31 @@
 <main>
-  appIniciada
+
+  <div class="header">
+    <div class="header-character">
+      <span>
+      DIEGO CASALOTTO
+      </span>
+      <span>
+      DESARROLLADOR FULL STACK
+      </span>
+      <span>
+      Datos Cabecera
+      </span>
+    </div>
+  </div>
+
   <div>
-    @if (side.up.button) {
-      <button class="btn-movimiento" (click)="changeRoom(side.up.targetId)">buttonUp</button>
-    }
-    @if (side.down.button) {
-      <button class="btn-movimiento" (click)="changeRoom(side.down.targetId)">buttonDown</button>
-    }
-    @if (side.left.button) {
-      <button class="btn-movimiento" (click)="changeRoom(side.left.targetId)">buttonLeft</button>
-    }
-    @if (side.right.button) {
-      <button class="btn-movimiento" (click)="changeRoom(side.right.targetId)">buttonRight</button>
+    <room-about (eventRoom)="roomLoaded($event)" [ngStyle]="getStyle(1)"></room-about>
+    <room-contact (eventRoom)="roomLoaded($event)" [ngStyle]="getStyle(2)"></room-contact>
+
+    @if (rooms.length == maxRooms) {
+      <div>
+        <button class="btn-movement btn-up" [class.hidden]="!side.up.button" (click)="changeRoom(side.up.targetId)"> </button>
+        <button class="btn-movement btn-down" [class.hidden]="!side.down.button" (click)="changeRoom(side.down.targetId)"> </button>
+        <button class="btn-movement btn-left" [class.hidden]="!side.left.button" (click)="changeRoom(side.left.targetId)"> </button>
+        <button class="btn-movement btn-right" [class.hidden]="!side.right.button" (click)="changeRoom(side.right.targetId)"> </button>
+      </div>
     }
   </div>
-  @if (windowLoaded()) {
-    <room-about (eventRoom)="roomCargada($event)"></room-about>
-    <room-contact (eventRoom)="roomCargada($event)"></room-contact>
-  }
 
 </main>

@@ -15,13 +15,13 @@ export class About implements AfterViewInit {
     this.configRoom = {
       id: 1,
       txId: 'roomAbout',
-      center: {x: 300, y: 300},
-      size: {x: 250, y: 250},
+      center: {x: 600, y: 750},
+      size: {x: 125, y: 125},
       side: {
-        up: {button: false, targetId: 0},
+        up: {button: false, targetId: 2},
         down: {button: true, targetId: 2},
-        left: {button: false, targetId: 0},
-        right: {button: false, targetId: 0},
+        left: {button: false, targetId: 2},
+        right: {button: true, targetId: 2},
       }
     };
   }

@@ -2,15 +2,17 @@ import {Component, signal} from '@angular/core';
 import {RoomConfigModel, SideInter} from './models/room-config.model';
 import {About} from './rooms/about/about';
 import {Contact} from './rooms/contact/contact';
+import {NgStyle} from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [About, Contact],
+  imports: [About, Contact, NgStyle],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   rooms: RoomConfigModel[];
+  maxRooms = 2;
   roomSelected: number | undefined;
 
   side: {
@@ -33,11 +35,16 @@ export class App {
     };
   }
 
-  roomCargada(config: RoomConfigModel): void {
+  roomLoaded(config: RoomConfigModel): void {
+    if (this.getRoom(config.id)) {
+      return;
+    }
     this.rooms.push(config);
     if (!this.roomSelected) {
       this.changeRoom(config.id);
     }
+    console.log("room ", config.id, "(", config.txId,") load - style: ", this.getStyle(config.id));
+    console.log("rooms loaded: ", this.rooms.length);
   }
 
   changeRoom(id: number | undefined): void {
@@ -74,6 +81,34 @@ export class App {
 
   getRoom(id: number | undefined): RoomConfigModel | undefined {
     return this.rooms.find(x => x.id === id);
+  }
+
+  // getPosition(id: number): string {
+  //   let room = this.getRoom(1);
+  //   if (!room) {
+  //     return '0px, 0px';
+  //   }
+  //   let posX = room.center.x - room.size.x / 2;
+  //   let posY = room.center.y - room.size.y / 2;
+  //   return posX + 'px, ' + posY + 'px';
+  // }
+
+  getStyle(id: number): object {
+    let room = this.getRoom(1);
+    if (!room) {
+      console.log("Error style room: ", id);
+      return {};
+    }
+    let posX = room.center.x - room.size.x / 2;
+    let posY = room.center.y - room.size.y / 2;
+
+    return {
+      position: 'absolute',
+      top: posX+'px',
+      left: posY+'px',
+      width: room.size.x,
+      height: room.size.y
+    };
   }
 
   existsRoom(id: number): boolean {

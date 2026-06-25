@@ -15,12 +15,12 @@ export class Contact implements AfterViewInit {
     this.configRoom = {
       id: 2,
       txId: 'roomContact',
-      center: {x: 300, y: 600},
-      size: {x: 250, y: 250},
+      center: {x: 1200, y: 850},
+      size: {x: 300, y: 600},
       side: {
         up: {button: true, targetId: 1},
         down: {button: false, targetId: 0},
-        left: {button: false, targetId: 0},
+        left: {button: true, targetId: 1},
         right: {button: false, targetId: 0},
       }
     };
