@@ -5,24 +5,33 @@
   font-style: normal;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .body-master {
   overflow: hidden;
-  background-color: black;
+  /*background-color: black;*/
   color:white;
   font-family: 'PixelFont', serif;
+}
+
+.body-rooms {
+  width: 50%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  /*transform-origin: top left;*/
 }
 
 .btn-movement {
   margin-top: 100px;
   z-index: 500;
-  background: 0;
   cursor: alias;
   position: fixed;
-  background-repeat: no-repeat;
-  background-position-x: center;
-  border: outset 3px;
+  background: no-repeat center;
   border-radius: 10px;
-  border-color: gray;
+  border: 3px outset gray;
   opacity: 1;
   visibility: visible;
 
@@ -81,6 +90,7 @@
   left: -50px;
   height: 150px;
   width: 150%;
+  z-index: 100;
 }
 
 .header-character {
@@ -88,12 +98,10 @@
   top: 20px;
   left: 20px;
   display: grid;
-  border: outset 3px;
   border-radius: 10px;
-  border-color: gray;
+  border: 3px outset gray;
   inline-size: max-content;
-  padding: 10px;
-  padding-left: 60px;
+  padding: 10px 10px 10px 60px;
 }
 
 .room {

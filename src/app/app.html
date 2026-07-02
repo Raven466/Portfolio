@@ -1,4 +1,4 @@
-<main>
+<main [style.width]="winSize.x+'px'" [style.height]="winSize.y+'px'">
 
   <div class="header">
     <div class="header-character">
@@ -13,10 +13,15 @@
       </span>
     </div>
   </div>
-
-  <div>
-    <room-about (eventRoom)="roomLoaded($event)" [ngStyle]="getStyle(1)"></room-about>
-    <room-contact (eventRoom)="roomLoaded($event)" [ngStyle]="getStyle(2)"></room-contact>
+  @if (isWindow()){
+  <div class="body-rooms" [style.transform]="'scale(' + mapScale + ')'">
+    <div [ngStyle]="getStyle(1)">
+      <room-about (eventRoom)="roomLoaded($event)" ></room-about>
+    </div>
+    <div [ngStyle]="getStyle(2)">
+      <room-contact (eventRoom)="roomLoaded($event)"></room-contact>
+    </div>
+  </div>
 
     @if (rooms.length == maxRooms) {
       <div>
@@ -26,6 +31,6 @@
         <button class="btn-movement btn-right" [class.hidden]="!side.right.button" (click)="changeRoom(side.right.targetId)"> </button>
       </div>
     }
-  </div>
+  }
 
 </main>

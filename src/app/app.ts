@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, HostListener, signal} from '@angular/core';
 import {RoomConfigModel, SideInter} from './models/room-config.model';
 import {About} from './rooms/about/about';
 import {Contact} from './rooms/contact/contact';
@@ -22,6 +22,10 @@ export class App {
     right: SideInter
   };
 
+  winSize = {x: 0, y: 0};
+  mapScale = 1;
+
+
   protected readonly title = signal('Portfolio');
 
   constructor() {
@@ -35,32 +39,65 @@ export class App {
     };
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    let room = this.getRoom(this.roomSelected);
+    this.moveToRoom(room);
+  }
+
   roomLoaded(config: RoomConfigModel): void {
     if (this.getRoom(config.id)) {
       return;
     }
     this.rooms.push(config);
-    if (!this.roomSelected) {
-      this.changeRoom(config.id);
+
+    let change = false;
+    if (config.center.x + config.size.x > this.winSize.x) {
+      this.winSize.x = config.center.x + config.size.x + 2000; // window.innerWidth;
+      change = true;
     }
-    console.log("room ", config.id, "(", config.txId,") load - style: ", this.getStyle(config.id));
+    if (config.center.y + config.size.y > this.winSize.y) {
+      this.winSize.y = config.center.y + config.size.y + 2000; // + window.innerHeight;
+      change = true;
+    }
+    if (change) {
+      console.log("map resized: {", this.winSize.x, ", ", this.winSize.y, "}");
+    }
+
+    if (!this.roomSelected && this.rooms.length == this.maxRooms) {
+      this.changeRoom(1);
+    }
+    console.log("room ", config.id, "(", config.txId, ") load - style: ", this.getStyle(config.id));
     console.log("rooms loaded: ", this.rooms.length);
   }
 
   changeRoom(id: number | undefined): void {
     this.roomSelected = id;
-    let newRoom = this.getRoom(id);
-    if (!!newRoom) {
-      let posX = newRoom.center.x - newRoom.size.x / 2;
-      let posY = newRoom.center.y - newRoom.size.y / 2;
-      globalThis.window.scroll({
-        left: posX,
-        top: posY,
-        behavior: 'smooth'
-      });
-      console.log("scroll to ", posX, ", ", posY, " - room: ", newRoom.txId);
+    let room = this.getRoom(id);
+    if (!!room) {
+      this.moveToRoom(room)
+      this.loadConfigRoom(room);
+    }
+  }
 
-      this.loadConfigRoom(newRoom);
+  moveToRoom(room: RoomConfigModel | undefined): void {
+    if (room && this.isWindow()) {
+      const width = window.innerWidth;
+      const height = window.innerHeight - 150; // header
+
+      let scaleX = (width - 60) / room.size.x;
+      let scaleY = (height - 60) / room.size.y;
+      let scale = Math.min(scaleX, scaleY);
+      this.mapScale = scale;
+      // document.body.style.transform = "scale(" + scale + ")";
+      console.log("scaleX ", scaleX, "(", width, "/", room.size.x, "), scaleY ", scaleY, "(", height, "/", room.size.y, "): ", scale);
+
+      let posX = room.center.x - ((width - room.size.x) / 2) * scale;
+      let posY = room.center.y - ((height - room.size.y) / 2) * scale;
+      window.scroll(posX, posY);
+      console.log("scroll to ", posX, ", ", posY, "(", 1, ") - room: ", room.txId);
+    } else {
+      console.log("window not found");
     }
   }
 
@@ -75,26 +112,12 @@ export class App {
     this.side.right.targetId = room.side.right.targetId;
   }
 
-  windowLoaded(): boolean {
-    return !!globalThis.window?.scroll;
-  }
-
   getRoom(id: number | undefined): RoomConfigModel | undefined {
     return this.rooms.find(x => x.id === id);
   }
 
-  // getPosition(id: number): string {
-  //   let room = this.getRoom(1);
-  //   if (!room) {
-  //     return '0px, 0px';
-  //   }
-  //   let posX = room.center.x - room.size.x / 2;
-  //   let posY = room.center.y - room.size.y / 2;
-  //   return posX + 'px, ' + posY + 'px';
-  // }
-
   getStyle(id: number): object {
-    let room = this.getRoom(1);
+    let room = this.getRoom(id);
     if (!room) {
       console.log("Error style room: ", id);
       return {};
@@ -104,14 +127,19 @@ export class App {
 
     return {
       position: 'absolute',
-      top: posX+'px',
-      left: posY+'px',
-      width: room.size.x,
-      height: room.size.y
+      top: posY + 'px',
+      left: posX + 'px',
+      width: room.size.x + 'px',
+      height: room.size.y + 'px',
+      'background-image': 'url(./media/room.jpg)',
+      'background-size': 'contain',
+      'background-position': 'center',
+      'background-repeat': 'no-repeat',
+      'align-content': 'center'
     };
   }
 
-  existsRoom(id: number): boolean {
-    return !!this.getRoom(id);
+  isWindow(): boolean {
+    return typeof window !== 'undefined';
   }
 }
